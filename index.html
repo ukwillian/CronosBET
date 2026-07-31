@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang='pt-br'>
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
+    <title></title>
+    <style>
+        body { margin:0; background:#101010; color:#fff; font-family:Arial, sans-serif; }
+        
+        /* Cabeçalho */
+        header { position:sticky; top:0; background:#000000; padding:18px; border-bottom:2px solid #d4af37; display:flex; justify-content:space-between; align-items:center; z-index:10; }
+        .logo { font-size:2rem; font-weight:bold; }
+        .logo span { color:#d4af37; }
+        .balance { font-weight:bold; color:#28a745; background:#1a1a1a; padding:6px 12px; border-radius:6px; border:1px solid #333;}
+        .banner { text-align:center; padding:18px; background:#1c1c1c; border-bottom:1px solid #333; }
+        
+        /* Lista de Países */
+        .acc { max-width:900px; margin:20px auto; padding: 0 12px; }
+        .item { background:#202020; margin:8px 0; border-radius:8px; overflow:hidden; }
+        .btn { padding:18px; font-weight:bold; font-size: 1.1rem; cursor:pointer; display:flex; justify-content:space-between; align-items:center;}
+        .content { display:none; padding:20px; border-top:1px solid #333; background:#1a1a1a; }
+        
+        /* Estados dos Países */
+        .passado .btn { color:#555; background:#141414; }
+        .ativo { border:2px solid #d4af37; box-shadow:0 0 15px rgba(212,175,55,.2); }
+        .ativo .btn { color: #d4af37; }
+        .live { background:#d11; color:#fff; border-radius:12px; padding:4px 10px; font-size:12px; animation: blink 1.5s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        
+        /* Formulário de Aposta */
+        label { display:block; background:#2b2b2b; padding:15px; margin:10px 0; border-radius:6px; cursor:pointer; transition: 0.2s; border:1px solid transparent; font-size: 1.1rem;}
+        label:hover { border-color:#d4af37; background:#333; }
+        input[type=radio] { accent-color: #d4af37; transform: scale(1.3); margin-right: 12px; cursor:pointer;}
+        button.submit-btn { width: 100%; padding:16px; background:#d4af37; color:#000; border:0; border-radius:6px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 15px; text-transform: uppercase;}
+        button.submit-btn:active { transform: scale(0.98); background:#b8962c; }
+        
+        /* Mensagem de Sucesso */
+        #msg { display:none; background:#173817; border: 1px solid #28a745; padding:15px; margin-top:15px; border-radius:6px; text-align:center; font-size:1.1rem; line-height: 1.5;}
+
+        /* Modal de Aposta Grátis (Substitui o alert) */
+        #welcome-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:999; display:flex; justify-content:center; align-items:center; }
+        #welcome-modal { background:#1c1c1c; padding:30px 20px; border-radius:12px; border:2px solid #d4af37; text-align:center; width: 85%; max-width:400px; box-shadow: 0 0 40px rgba(212,175,55,0.25); }
+        #welcome-modal h2 { color:#d4af37; margin-top:0; font-size: 1.6rem;}
+        #welcome-modal p { font-size: 1.1rem; margin-bottom: 25px; line-height: 1.4; color: #ccc;}
+        #welcome-modal button { background:#d4af37; color:#000; border:none; padding:15px 30px; font-size:1.1rem; font-weight:bold; border-radius:6px; cursor:pointer; width: 100%; text-transform: uppercase;}
+    </style>
+</head>
+<body>
+
+    <!-- Modal Inicial (Bloqueia a tela até o usuário clicar) -->
+    <div id="welcome-overlay">
+        <div id="welcome-modal">
+            <h2>🎁 BÔNUS DESBLOQUEADO</h2>
+            <p>Você recebeu sua <b>PRIMEIRA APOSTA GRÁTIS</b> na CronosBET para o evento <i>O Pior dos Piores</i>!</p>
+            <button onclick="iniciarApp()">Resgatar Aposta</button>
+        </div>
+    </div>
+
+    <header>
+        <img src="logo.png" alt="CronosBET" style="max-height: 45px; max-width: 150px; object-fit: contain;">
+        <div class='balance'>💰R$ 10,00</div>
+    </header>
+    
+    <div class='banner'>
+        <h2>O Pior dos Piores 101</h2>
+    </div>
+    
+    <div id='acc' class='acc'></div>
+
+    <script>
+        // Array de países em ordem alfabética
+        const countries = ["Alemanha","Arábia Saudita","Argentina","Austrália","Áustria","Bélgica","Bolívia","Brasil","Canadá","Chile","China","Colômbia","Coreia do Sul","Costa Rica","Croácia","Dinamarca","Egito","Emirados Árabes Unidos","Espanha","Estados Unidos","Filipinas","Finlândia","França","Grécia","Holanda","Hungria","Índia","Indonésia","Inglaterra","Irlanda","Israel","Itália","Japão","México","Noruega","Nova Zelândia","Paraguai","Peru","Polônia","Portugal","Reino Unido","República Tcheca","Romênia","Rússia","Suécia","Suíça","Tailândia","Turquia","Ucrânia","Uruguai"].sort((a,b)=>a.localeCompare(b,'pt'));
+        
+        const bi = countries.indexOf("Brasil");
+        const acc = document.getElementById("acc");
+
+        // Construção da lista de países
+        countries.forEach((c, i) => {
+            let it = document.createElement("div");
+            it.className = "item";
+            
+            // Lógica de cores (Cinza pros que já passaram)
+            if(i < bi) it.classList.add("passado");
+            
+            // Marca o elemento do Brasil
+            if(c == "Brasil") {
+                it.classList.add("ativo");
+                it.id = "secao-brasil";
+            }
+            
+            let b = document.createElement("div");
+            b.className = "btn";
+            b.innerHTML = c == "Brasil" ? `🌎 Brasil <span class='live'>AO VIVO</span>` : `🌎 ` + c;
+            
+            let ct = document.createElement("div");
+            ct.className = "content";
+            ct.id = c == "Brasil" ? "conteudo-brasil" : "";
+            
+            // Conteúdo exclusivo do Brasil
+            if(c == "Brasil"){
+                ct.innerHTML = `
+                    <h3 style="text-align:center; color:#fff; margin-top:0;">Quem você acha que vai levar a faixa Pior dos Piores Brasil?</h3>
+                    <label><input type="radio" name="v" value="1500"> 1500 <b style='float:right; color:#d4af37;'>1.95</b></label>
+                    <label><input type="radio" name="v" value="1964"> 1964 <b style='float:right; color:#d4af37;'>2.10</b></label>
+                    <label><input type="radio" name="v" value="2020"> 2020 <b style='float:right; color:#d4af37;'>1.80</b></label>
+                    <button class="submit-btn" onclick='vote()'>Confirmar aposta</button>
+                    <div id="msg"></div>
+                `;
+                
+                // Toggle de abrir/fechar ao clicar no Brasil
+                b.onclick = () => {
+                    ct.style.display = (ct.style.display == "block") ? "none" : "block";
+                };
+            }
+            
+            it.append(b, ct);
+            acc.append(it);
+        });
+
+        // Função chamada pelo botão do Modal Inicial
+        function iniciarApp() {
+            // Remove o overlay escuro
+            document.getElementById('welcome-overlay').style.display = 'none';
+            
+            let bContent = document.getElementById("conteudo-brasil");
+            let bSection = document.getElementById("secao-brasil");
+
+            // Força a expansão do Brasil
+            bContent.style.display = "block";
+
+            // Rola suavemente até a seção do Brasil para ficar no centro da tela
+            setTimeout(() => {
+                bSection.scrollIntoView({ behavior: "smooth", block: "center" });
+            }, 100);
+        }
+
+        // Função de registrar a aposta
+        function vote() {
+            let s = document.querySelector("input[name=v]:checked");
+            if(!s){
+                alert("Por favor, selecione uma das opções antes de apostar.");
+                return;
+            }
+            
+            let m = document.getElementById("msg");
+            m.style.display = "block";
+            m.style.background = "#2b2b2b";
+            m.style.borderColor = "#444";
+            m.innerHTML = "⏳ Registrando aposta...";
+            
+            // Simula o tempo de rede e gera o bilhete
+            setTimeout(() => {
+                m.style.background = "#173817";
+                m.style.borderColor = "#28a745";
+                
+                let bilhete = Math.floor(Math.random() * 9e5 + 1e5); // Gera número de 100000 a 999999
+                let anoEscolhido = s.value; // Pega o ano que o usuário clicou (1500, 1964 ou 2020)
+                
+                m.innerHTML = `✅ <b>Aposta confirmada!</b><br><br>Você apostou no ano: <b>${anoEscolhido}</b><br>Bilhete <b>#CRN-${bilhete}</b>`;
+            }, 1800);
+        }
+    </script>
+</body>
+</html>
