@@ -7,11 +7,11 @@
     <style>
         body { margin:0; background:#101010; color:#fff; font-family:Arial, sans-serif; }
         
-        /* Cabeçalho em Grid: 3 colunas para manter a logo no centro perfeito e o saldo na direita */
+        /* Cabeçalho em Grid */
         header { 
             position: sticky; 
             top: 0; 
-            background: #151515; 
+            background: #050505; 
             padding: 12px 20px; 
             border-bottom: 2px solid #d4af37; 
             display: grid; 
@@ -20,11 +20,9 @@
             z-index: 10; 
         }
 
-        .header-spacer { 
-            visibility: hidden; 
-        }
+        .header-spacer { visibility: hidden; }
 
-        /* Logo no Centro */
+        /* Logo */
         .logo-img { 
             height: 110px !important; 
             width: auto; 
@@ -34,7 +32,7 @@
             justify-self: center;
         }
 
-        /* Saldo na Ponta Direita */
+        /* Saldo */
         .balance { 
             font-weight: bold; 
             color: #28a745; 
@@ -46,23 +44,21 @@
             white-space: nowrap;
         }
 
-        /* Banner do Título Centralizado */
+        /* Banner */
         .banner { 
             text-align: center; 
             padding: 18px; 
             background: #1c1c1c; 
             border-bottom: 1px solid #333; 
         }
-        .banner h2 {
-            margin: 0;
-            text-align: center;
-            font-size: 1.5rem;
-        }
+        .banner h2 { margin: 0; text-align: center; font-size: 1.5rem; }
         
         /* Lista de Países */
         .acc { max-width:900px; margin:20px auto; padding: 0 12px; }
         .item { background:#202020; margin:8px 0; border-radius:8px; overflow:hidden; }
         .btn { padding:18px; font-weight:bold; font-size: 1.1rem; cursor:pointer; display:flex; justify-content:space-between; align-items:center;}
+        .country-name { display: flex; align-items: center; gap: 12px; }
+        .flag-img { width: 26px; height: 18px; object-fit: cover; border-radius: 3px; box-shadow: 0 0 4px rgba(0,0,0,0.5); }
         .content { display:none; padding:20px; border-top:1px solid #333; background:#1a1a1a; }
         
         /* Estados dos Países */
@@ -88,6 +84,24 @@
         #welcome-modal h2 { color:#d4af37; margin-top:0; font-size: 1.6rem;}
         #welcome-modal p { font-size: 1.1rem; margin-bottom: 25px; line-height: 1.4; color: #ccc;}
         #welcome-modal button { background:#d4af37; color:#000; border:none; padding:15px 30px; font-size:1.1rem; font-weight:bold; border-radius:6px; cursor:pointer; width: 100%; text-transform: uppercase;}
+    
+        /* Rodapé Fictício */
+        footer {
+            text-align: center;
+            padding: 25px 15px;
+            font-size: 0.8rem;
+            color: #666;
+            border-top: 1px solid #222;
+            margin-top: 40px;
+            background: #0a0a0a;
+            line-height: 1.5;
+        }
+        footer b {
+            color: #aaa;
+        }
+        footer span {
+            color: #d4af37;
+        }
     </style>
 </head>
 <body>
@@ -113,26 +127,30 @@
     
     <div id='acc' class='acc'></div>
 
+    <footer>
+        <p>⚠️ <b>AVISO DE FICÇÃO:</b> A <b>CronosBET</b> é uma plataforma fictícia criada exclusivamente como recurso dramático para o <span>Festival de Cenas Curtas VIII</span>.</p>
+        <p>Não há transações financeiras, prêmios reais ou coleta de dados pessoais.</p>
+    </footer>
+
     <script>
-        // Objeto com o mapeamento de cada país para sua respectiva bandeira
-        const flags = {
-            "Alemanha": "🇩🇪", "Arábia Saudita": "🇸🇦", "Argentina": "🇦🇷", "Austrália": "🇦🇺",
-            "Áustria": "🇦🇹", "Bélgica": "🇧🇪", "Bolívia": "🇧🇴", "Brasil": "🇧🇷",
-            "Canadá": "🇨🇦", "Chile": "🇨🇱", "China": "🇨🇳", "Colômbia": "🇨🇴",
-            "Coreia do Sul": "🇰🇷", "Costa Rica": "🇨🇷", "Croácia": "🇭🇷", "Dinamarca": "🇩🇰",
-            "Egito": "🇪🇬", "Emirados Árabes Unidos": "🇦🇪", "Espanha": "🇪🇸", "Estados Unidos": "🇺🇸",
-            "Filipinas": "🇵🇭", "Finlândia": "🇫🇮", "França": "🇫🇷", "Grécia": "🇬🇷",
-            "Holanda": "🇳🇱", "Hungria": "🇭🇺", "Índia": "🇮🇳", "Indonésia": "🇮🇩",
-            "Inglaterra": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "Irlanda": "🇮🇪", "Israel": "🇮🇱", "Itália": "🇮🇹",
-            "Japão": "🇯🇵", "México": "🇲🇽", "Noruega": "🇳🇴", "Nova Zelândia": "🇳🇿",
-            "Paraguai": "🇵🇾", "Peru": "🇵🇪", "Polônia": "🇵🇱", "Portugal": "🇵🇹",
-            "Reino Unido": "🇬🇧", "República Tcheca": "🇨🇿", "Romênia": "🇷🇴", "Rússia": "🇷🇺",
-            "Suécia": "🇸🇪", "Suíça": "🇨🇭", "Tailândia": "🇹🇭", "Turquia": "🇹🇷",
-            "Ucrânia": "🇺🇦", "Uruguai": "🇺🇾"
+        // Mapeamento de ISO de cada país para puxar imagens reais das bandeiras
+        const countryCodes = {
+            "Alemanha": "de", "Arábia Saudita": "sa", "Argentina": "ar", "Austrália": "au",
+            "Áustria": "at", "Bélgica": "be", "Bolívia": "bo", "Brasil": "br",
+            "Canadá": "ca", "Chile": "cl", "China": "cn", "Colômbia": "co",
+            "Coreia do Sul": "kr", "Costa Rica": "cr", "Croácia": "hr", "Dinamarca": "dk",
+            "Egito": "eg", "Emirados Árabes Unidos": "ae", "Espanha": "es", "Estados Unidos": "us",
+            "Filipinas": "ph", "Finlândia": "fi", "França": "fr", "Grécia": "gr",
+            "Holanda": "nl", "Hungria": "hu", "Índia": "in", "Indonésia": "id",
+            "Inglaterra": "gb-eng", "Irlanda": "ie", "Israel": "il", "Itália": "it",
+            "Japão": "jp", "México": "mx", "Noruega": "no", "Nova Zelândia": "nz",
+            "Paraguai": "py", "Peru": "pe", "Polônia": "pl", "Portugal": "pt",
+            "Reino Unido": "gb", "República Tcheca": "cz", "Romênia": "ro", "Rússia": "ru",
+            "Suécia": "se", "Suíça": "ch", "Tailândia": "th", "Turquia": "tr",
+            "Ucrânia": "ua", "Uruguai": "uy"
         };
 
-        const countries = Object.keys(flags).sort((a,b)=>a.localeCompare(b,'pt'));
-        
+        const countries = Object.keys(countryCodes).sort((a,b)=>a.localeCompare(b,'pt'));
         const bi = countries.indexOf("Brasil");
         const acc = document.getElementById("acc");
 
@@ -147,10 +165,14 @@
                 it.id = "secao-brasil";
             }
             
-            let flag = flags[c] || "🌐";
+            let code = countryCodes[c];
+            let flagImg = `<img src="https://flagcdn.com/w40/${code}.png" class="flag-img" alt="${c}">`;
+            
             let b = document.createElement("div");
             b.className = "btn";
-            b.innerHTML = c == "Brasil" ? `${flag} Brasil <span class='live'>AO VIVO</span>` : `${flag} ` + c;
+            b.innerHTML = c == "Brasil" 
+                ? `<span class="country-name">${flagImg} Brasil</span> <span class='live'>AO VIVO</span>` 
+                : `<span class="country-name">${flagImg} ${c}</span>`;
             
             let ct = document.createElement("div");
             ct.className = "content";
