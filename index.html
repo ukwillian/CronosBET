@@ -11,23 +11,22 @@
         header { 
             position: sticky; 
             top: 0; 
-            background: #050505; 
+            background: #151515; 
             padding: 12px 20px; 
             border-bottom: 2px solid #d4af37; 
             display: grid; 
-            grid-template-columns: 1fr auto 1fr; /* Coluna esquerda vazia, meio logo, direita saldo */
+            grid-template-columns: 1fr auto 1fr;
             align-items: center; 
             z-index: 10; 
         }
 
-        /* Espaçador invisível na esquerda apenas para equilibrar o grid */
         .header-spacer { 
             visibility: hidden; 
         }
 
-        /* Logo 2.5x Maior e no Centro */
+        /* Logo no Centro */
         .logo-img { 
-            height: 110px !important; /* 2.5x maior que os 45px anteriores */
+            height: 110px !important; 
             width: auto; 
             max-width: 260px; 
             display: block; 
@@ -115,7 +114,24 @@
     <div id='acc' class='acc'></div>
 
     <script>
-        const countries = ["Alemanha","Arábia Saudita","Argentina","Austrália","Áustria","Bélgica","Bolívia","Brasil","Canadá","Chile","China","Colômbia","Coreia do Sul","Costa Rica","Croácia","Dinamarca","Egito","Emirados Árabes Unidos","Espanha","Estados Unidos","Filipinas","Finlândia","França","Grécia","Holanda","Hungria","Índia","Indonésia","Inglaterra","Irlanda","Israel","Itália","Japão","México","Noruega","Nova Zelândia","Paraguai","Peru","Polônia","Portugal","Reino Unido","República Tcheca","Romênia","Rússia","Suécia","Suíça","Tailândia","Turquia","Ucrânia","Uruguai"].sort((a,b)=>a.localeCompare(b,'pt'));
+        // Objeto com o mapeamento de cada país para sua respectiva bandeira
+        const flags = {
+            "Alemanha": "🇩🇪", "Arábia Saudita": "🇸🇦", "Argentina": "🇦🇷", "Austrália": "🇦🇺",
+            "Áustria": "🇦🇹", "Bélgica": "🇧🇪", "Bolívia": "🇧🇴", "Brasil": "🇧🇷",
+            "Canadá": "🇨🇦", "Chile": "🇨🇱", "China": "🇨🇳", "Colômbia": "🇨🇴",
+            "Coreia do Sul": "🇰🇷", "Costa Rica": "🇨🇷", "Croácia": "🇭🇷", "Dinamarca": "🇩🇰",
+            "Egito": "🇪🇬", "Emirados Árabes Unidos": "🇦🇪", "Espanha": "🇪🇸", "Estados Unidos": "🇺🇸",
+            "Filipinas": "🇵🇭", "Finlândia": "🇫🇮", "França": "🇫🇷", "Grécia": "🇬🇷",
+            "Holanda": "🇳🇱", "Hungria": "🇭🇺", "Índia": "🇮🇳", "Indonésia": "🇮🇩",
+            "Inglaterra": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "Irlanda": "🇮🇪", "Israel": "🇮🇱", "Itália": "🇮🇹",
+            "Japão": "🇯🇵", "México": "🇲🇽", "Noruega": "🇳🇴", "Nova Zelândia": "🇳🇿",
+            "Paraguai": "🇵🇾", "Peru": "🇵🇪", "Polônia": "🇵🇱", "Portugal": "🇵🇹",
+            "Reino Unido": "🇬🇧", "República Tcheca": "🇨🇿", "Romênia": "🇷🇴", "Rússia": "🇷🇺",
+            "Suécia": "🇸🇪", "Suíça": "🇨🇭", "Tailândia": "🇹🇭", "Turquia": "🇹🇷",
+            "Ucrânia": "🇺🇦", "Uruguai": "🇺🇾"
+        };
+
+        const countries = Object.keys(flags).sort((a,b)=>a.localeCompare(b,'pt'));
         
         const bi = countries.indexOf("Brasil");
         const acc = document.getElementById("acc");
@@ -131,9 +147,10 @@
                 it.id = "secao-brasil";
             }
             
+            let flag = flags[c] || "🌐";
             let b = document.createElement("div");
             b.className = "btn";
-            b.innerHTML = c == "Brasil" ? `🌎 Brasil <span class='live'>AO VIVO</span>` : `🌎 ` + c;
+            b.innerHTML = c == "Brasil" ? `${flag} Brasil <span class='live'>AO VIVO</span>` : `${flag} ` + c;
             
             let ct = document.createElement("div");
             ct.className = "content";
