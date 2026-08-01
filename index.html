@@ -7,12 +7,26 @@
     <style>
         body { margin:0; background:#101010; color:#fff; font-family:Arial, sans-serif; }
         
-        /* Cabeçalho */
-        header { position:sticky; top:0; background:#000000; padding:18px; border-bottom:2px solid #d4af37; display:flex; justify-content:space-between; align-items:center; z-index:10; }
-        .logo { font-size:2rem; font-weight:bold; }
-        .logo span { color:#d4af37; }
-        .balance { font-weight:bold; color:#28a745; background:#1a1a1a; padding:6px 12px; border-radius:6px; border:1px solid #333;}
-        .banner { text-align:center; padding:18px; background:#1c1c1c; border-bottom:1px solid #333; }
+/* Cabeçalho Centralizado com Logo Maior */
+        header { 
+            position: sticky; 
+            top: 0; 
+            background: #000000; 
+            padding: 15px 18px; 
+            border-bottom: 2px solid #d4af37; 
+            display: flex; 
+            flex-direction: column; /* Empilha a logo e o saldo no centro */
+            align-items: center; 
+            gap: 10px; 
+            z-index: 10; 
+        }
+
+        .logo-img {
+            height: 90px;     /* 'height' força a imagem a esticar até essa altura */
+            width: auto;      /* Mantém a proporção correta para não distorcer */
+            max-width: 85vw;  /* Evita estourar a largura em telas muito pequenas */
+            display: block;
+        }
         
         /* Lista de Países */
         .acc { max-width:900px; margin:20px auto; padding: 0 12px; }
@@ -57,7 +71,7 @@
     </div>
 
     <header>
-        <img src="logo.png" alt="CronosBET" style="max-height: 45px; max-width: 150px; object-fit: contain;">
+        <img src="logo.png" alt="CronosBET" class="logo-img">
         <div class='balance'>💰R$ 10,00</div>
     </header>
     
